@@ -1,0 +1,135 @@
+.steam-server {
+    position: relative;
+    max-width: 415px;
+    background-color: rgb(27, 27, 27);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 0px;
+    margin-top: 20px;
+    border: 3px solid #444;
+    gap: 13px;
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: 'Pixel Georgia';
+}
+.steam-server:hover {
+    box-shadow: 0px 0px 15px 3px rgb(85 110 139 / 60%);
+}
+.steam-server-image {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    background-repeat: no-repeat;
+    background-size: 19%;
+    background-position: center;
+}
+
+.steam-server-infos {
+    position: relative;
+    padding: 15px;
+}
+
+.steam-server-title {
+}
+
+.steam-server-title-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.steam-server-title-left-inf {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+}
+.steam-server-title-left-addr {
+    color: #73a4e4;
+    font-size: 25px;
+}
+
+.steam-server-title-left-info {
+    color: rgb(200, 200, 200);
+    font-size: 10px;
+}
+.steam-server-separator {
+    border: 2px solid #5a5a5a;
+    border-radius: 5px;
+    background: #222;
+    width: 200px;
+    margin: 7px;
+}
+.steam-server-title-left-name {
+    color: #73a4e4;
+    font-size: 1.5em;
+}
+
+.steam-server-title-right {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.steam-server-title-right-count {
+    /* color: rgb(130, 130, 130); */
+    /* font-size: 0.7em; */
+}
+
+.steam-server-title-right-bots {
+    /* color: rgb(130, 130, 130); */
+    /* font-size: 0.7em; */
+}
+
+.steam-server-gameinfo {
+    position: relative;
+    display: inline-block;
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.steam-server-gameinfo-item {
+    /* color: rgb(150, 150, 150); */
+    /* font-size: 0.65em; */
+}
+
+.steam-server-gameinfo-item-green {
+    color: rgb(85, 190, 111);
+}
+
+.steam-server-gameinfo-item-red {
+    color: rgb(179, 115, 115);
+}
+
+.steam-server-action {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+   
+}
+
+.steam-server-action a {
+    /* color: rgb(164 167 170); */
+    background: linear-gradient(#0043cf 31%, rgb(50, 115, 220) 69%, #0043cf 96%);
+    border-radius: 0px;
+    padding: 15px 65px;
+    margin: 0px 0px 0px 0px;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-family: 'Pixel Georgia';
+    border: 1px solid rgb(255, 255, 255);
+  
+}
+
+.steam-server-action a:hover {
+    color: rgb(250, 250, 250);
+    background: linear-gradient(#0048e4 6%, rgb(44, 118, 238) 62%, #0047e0 95%);
+}
