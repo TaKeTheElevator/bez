@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Госуслуги</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        
+        :root {
+            --primary-bg: #000000;
+            --deep-blue-bg: #020d24;
+            --card-bg: #1A1A1A;
+            --dark-card-bg: #1e2235;
+            --tab-bg: #222640;
+            --panel-bg: #272727;
+            --primary-text: #FFFFFF;
+            --secondary-text: #9E9E9E;
+            --accent-blue: #0D6EFD;
+            --red-badge: #E74C3C;
+            --card-padding: 12px;
+            --element-margin-v: 10px;
+            --element-margin-h: 6px;
+            --border-radius-lg: 16px;
+            --icon-size: 24px;
+        }
+        
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', 'Roboto', sans-serif;
+            background: #000000;
+            color: var(--primary-text);
+            margin: 0;
+            position: relative;
+            overscroll-behavior: none;
+            overflow-x: hidden;
+        }
+        
+        #app-container {
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            min-height: 100%;
+            position: relative;
+        }
+        
+        @media (min-width: 576px) {
+            #app-container {
+                max-width: 390px;
+            }
+        }
+        
+        /* Навигация пользователя */
+        .user-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            height: 50px;
+            width: 100%;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        /* Горизонтальные табы */
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 0 10px;
+            margin-bottom: 14px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            background-color: #222640;
+            color: #FFFFFF;
+            border-radius: 24px;
+            padding: 10px 14px;
+            font-size: 14px;
+            white-space: nowrap;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            min-width: max-content;
+            flex-shrink: 0;
+        }
+        
+        /* Карточки */
+        .cards-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 0 10px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+        
+        .cards-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .card {
+            flex: 0 0 auto;
+            width: 85px;
+            height: 85px;
+            border-radius: 16px;
+            padding: 12px;
+            color: #FFFFFF;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card.fan-card {
+            background-color: #3366ff;
+            position: relative;
+        }
+
+        .card.account-card {
+            background-color: #3366ff;
+            position: relative;
+        }
+
+        .card.folder-card {
+            background-color: #2a9d8f;
+            border-color: rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .card.bank-card {
+            background-color: #3366ff;
+            position: relative;
+        }
+        
+        .card-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -65%);
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+        
+        .card-title {
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.2;
+            z-index: 2;
+            margin-bottom: 2px;
+        }
+        
+        /* Статус задолженности */
+        .debt-status {
+            background-color: #1a1f38;
+            border-radius: 16px;
+            padding: 20px 16px;
+            margin: 0 10px 20px;
+            position: relative;
+            z-index: 1;
+            width: calc(100% - 20px);
+        }
+        
+        /* Создаем синий фон вокруг блоков */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 250px;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: linear-gradient(to bottom, rgba(3, 26, 73, 0.4), rgba(0, 0, 0, 0));
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .debt-title {
+            color: #FFFFFF;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .debt-subtitle {
+            color: #9E9E9E;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        /* Документы */
+        .documents {
+            background-color: var(--panel-bg);
+            border-radius: 16px;
+            padding: 20px 14px 16px;
+            margin: 0 10px 20px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+        }
+        
+        .documents-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 0 8px;
+        }
+        
+        .document-icons {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 8px;
+        }
+        
+        .document-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        
+        .document-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .document-label {
+            font-size: 12px;
+            margin-top: 6px;
+            text-align: center;
+        }
+        
+        /* Паспорт */
+        .passport-red {
+            background: linear-gradient(135deg, #F55742, #BE362C);
+        }
+        
+        /* СНИЛС */
+        .snils-green {
+            background: linear-gradient(135deg, #27AE60, #219653);
+        }
+        
+        /* ИНН */
+        .inn-orange {
+            background: linear-gradient(135deg, #F2994A, #EB5757);
+        }
+        
+        /* Все */
+        .wallet-gray {
+            background: linear-gradient(135deg, #F2F2F2, #BDBDBD);
+        }
+        
+        /* Сервисы */
+        .services {
+            background-color: var(--panel-bg);
+            border-radius: 16px;
+            padding: 20px 14px 16px;
+            margin: 0 10px 20px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: calc(100% - 20px);
+        }
+        
+        .services-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 0 8px;
+        }
+        
+        .service-icons {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 8px;
+        }
+        
+        .service-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .icon-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 25%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4e4e4e00;
+            border: 1px solid rgb(80, 80, 80);
+            overflow: hidden;
+        }
+        
+        .icon-circle img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+        
+        .service-label {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 6px;
+        }
+        
+        /* Нижнее уведомление */
+        .notification-banner {
+            background-color: rgba(14, 17, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 14px;
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 14px;
+            border-radius: 16px;
+            margin: 0 10px 70px;
+            width: calc(100% - 20px);
+        }
+        
+        /* Нижняя навигация */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #000000;
+            padding: 6px 0;
+            border-top: 1px solid #1A1A1A;
+            height: 65px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 10;
+        }
+        
+        .nav-item {
+            color: #9E9E9E;
+            text-align: center;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 20%;
+        }
+        
+        .nav-item.active {
+            color: #0D6EFD;
+        }
+        
+        .active-dot {
+            width: 5px;
+            height: 5px;
+            background-color: #0D6EFD;
+            border-radius: 50%;
+            margin-top: 3px;
+        }
+        
+        .assistant-button-hex {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            position: relative;
+            /* margin-top: -18px; */
+            /* Сохраняем шестиугольную форму, но делаем углы более плавными */
+            border-radius: 8px;
+            /* Добавляем легкое смягчение в углах */
+            clip-path: polygon(50% 2%, 95% 25%, 95% 75%, 50% 98%, 5% 75%, 5% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .robot-icon {
+            width: 50px;
+            height: 42px;
+            margin-top: 12px;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            background-color: var(--red-badge);
+            color: white;
+            border-radius: 50%;
+            width: 8px;
+            height: 8px;
+        }
+        
+        .document-card {
+            background-color: #f8f0f0;
+            color: #000;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            margin: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .document-header {
+            background-color: #9e1c2a;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .document-content {
+            padding: 20px;
+        }
+        
+        .document-photo {
+            width: 100px;
+            height: 140px;
+            background-color: #e9e9e9;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        
+        .document-field {
+            margin-bottom: 10px;
+        }
+        
+        .document-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .document-value {
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        @media (max-width: 360px) {
+            .document-icon, .icon-circle {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .card {
+                width: 75px;
+                height: 75px;
+            }
+            
+            .card-image {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .card-title, .document-label, .service-label {
+                font-size: 10px;
+            }
+            
+            .document-icons, .service-icons {
+                gap: 5px;
+            }
+        }
+        
+        @media (min-width: 400px) {
+            .document-icon, .icon-circle {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .card {
+                width: 90px;
+                height: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="main-view">
+            <!-- Header -->
+            <div class="user-nav">
+                <div class="user-name">
+                    <div class="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center mr-2">
+                        <i class="fas fa-user text-white text-lg"></i>
+                    </div>
+                    <span>Евгений</span>
+                    <i class="fas fa-chevron-right ml-2 text-gray-400"></i>
+                </div>
+                <div class="nav-icons">
+                    <button>
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    <button class="relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+                    <button class="bg-gray-800 rounded-lg px-2 py-1">
+                        <span class="text-xs">госкан</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Services Tabs -->
+            <div class="tabs">
+                <div class="tab">
+                    <span>Электронная трудовая</span>
+                </div>
+                <div class="tab">
+                    <span>Запись к врачу</span>
+                </div>
+                <div class="tab">
+                    <span>Самозапрет на кредиты</span>
+                </div>
+            </div>
+            
+            <!-- Main Services -->
+            <div class="cards-container">
+                <div class="card fan-card">
+                    <img src="https://i.imgur.com/YcrOvp4.png" class="card-image" alt="Карта болельщика">
+                    <div class="card-title">Карта болельщика под рукой</div>
+                </div>
+                <div class="card account-card">
+                    <img src="https://i.imgur.com/6FS6F3u.png" class="card-image" alt="Защитите учётную запись">
+                    <div class="card-title">Защитите учётную запись</div>
+                </div>
+                <div class="card folder-card">
+                    <img src="https://i.imgur.com/NrZa4Zp.png" class="card-image" alt="Жизненные ситуации">
+                    <div class="card-title">Жизненные ситуации</div>
+                </div>
+                <div class="card bank-card">
+                    <img src="https://i.imgur.com/yfvBGV1.png" class="card-image" alt="Самозапрет на кредиты">
+                    <div class="card-title">Самозапрет на кредиты</div>
+                </div>
+            </div>
+            
+            <!-- No debts card -->
+            <div class="debt-status">
+                <div class="debt-title">Нет задолженностей</div>
+                <div class="debt-subtitle">уточните данные</div>
+            </div>
+            
+            <!-- Documents section -->
+            <div class="documents">
+                <h2 class="documents-title">Документы для предъявления</h2>
+                <div class="document-icons">
+                    <div id="passport-button" onclick="showPassport()" class="service-icon cursor-pointer">
+                        <div class="document-icon passport-red">
+                            <img src="passport.png" alt="Паспорт">
+                        </div>
+                        <span class="document-label">Паспорт</span>
+                    </div>
+                    <div class="service-icon">
+                        <div class="document-icon snils-green">
+                            <img src="snils.png" alt="СНИЛС">
+                        </div>
+                        <span class="document-label">СНИЛС</span>
+                    </div>
+                    <div class="service-icon">
+                        <div class="document-icon inn-orange">
+                            <img src="inn.png" alt="ИНН">
+                        </div>
+                        <span class="document-label">ИНН</span>
+                    </div>
+                    <div class="service-icon">
+                        <div class="document-icon wallet-gray">
+                            <img src="all.png" alt="Все">
+                        </div>
+                        <span class="document-label">Все</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services and Applications -->
+            <div class="services">
+                <h2 class="services-title">Сервисы и приложения</h2>
+                <div class="service-icons">
+                    <div class="service-icon">
+                        <div class="icon-circle">
+                            <img src="pulse.png" alt="Здоровье">
+                        </div>
+                        <span class="service-label">Здоровье</span>
+                    </div>
+                    <div class="service-icon">
+                        <div class="icon-circle">
+                            <img src="car.png" alt="Авто">
+                        </div>
+                        <span class="service-label">Авто</span>
+                    </div>
+                    <div class="service-icon">
+                        <div class="icon-circle">
+                            <img src="key.png" alt="Госключ">
+                        </div>
+                        <span class="service-label">Госключ</span>
+                    </div>
+                    <div class="service-icon">
+                        <div class="icon-circle" style="border-color: rgba(108, 117, 125, 0.5);">
+                            <img src="menu.png" alt="Другие">
+                        </div>
+                        <span class="service-label">Другие</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification card -->
+            <div class="notification-banner">
+                <p>Уведомления и статусы заявлений теперь в колокольчике сверху</p>
+            </div>
+            
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home text-lg mb-1"></i>
+                    <span>главная</span>
+                    <div class="active-dot"></div>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="">
+                        <img src="menu.png" style="width: 38px;">
+                    </i>
+                    <span>услуги</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <div class="assistant-button-hex">
+                        <img src="robot.svg" alt="Robot" class="robot-icon">
+                    </div>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card text-lg mb-1"></i>
+                    <span>платежи</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-alt text-lg mb-1"></i>
+                    <span>документы</span>
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Passport View -->
+        <div id="passport-view" style="display: none;">
+            <!-- Navigation Header -->
+            <div class="user-nav">
+                <button onclick="showMain()" class="text-xl">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="text-lg font-medium">Паспорт РФ</h1>
+                <button>
+                    <i class="fas fa-share-alt text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Passport Card -->
+            <div class="document-card mx-3 block">
+                <div class="document-header py-2">
+                    <h2 class="text-base uppercase">РОССИЙСКАЯ ФЕДЕРАЦИЯ</h2>
+                </div>
+                <div class="document-content">
+                    <div class="flex">
+                        <div class="document-photo flex items-center justify-center">
+                            <!-- <i class="fas fa-user text-5xl text-gray-400"> -->
+                                <img src="https://sun9-45.userapi.com/impg/OTQW2BCd9UVsbwiCFQ7Zklw6uizeTnurFGj0gA/QfSlKKlbi8s.jpg?size=1215x2160&quality=95&sign=1f9c1941f987d7036362ae58a514cbfe&type=album">
+                            <!-- </i> -->
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="text-lg font-bold">1337 148823</div>
+                                <i class="fas fa-copy text-blue-500"></i>
+                            </div>
+                            
+                            <div class="document-field">
+                                <div class="document-label">Кем выдан</div>
+                                <div class="document-value">ГУ МВД РОССИИ ПО РОСТОВСКОЙ ОБЛАСТИ</div>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                <div class="document-field w-1/2">
+                                    <div class="document-label">Дата выдачи</div>
+                                    <div class="document-value">01.04.2020</div>
+                                </div>
+                                <div class="document-field w-1/2">
+                                    <div class="document-label">Код подразделения</div>
+                                    <div class="document-value">640-228</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="document-field mt-3">
+                        <div class="document-label">ФИО</div>
+                        <div class="document-value">ГЕВЕЛУП МАКСИМКА АБАСРАЛСЯ</div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <div class="document-field w-1/2">
+                            <div class="document-label">Пол</div>
+                            <div class="document-value">МУЖСКОЙ</div>
+                        </div>
+                        <div class="document-field w-1/2">
+                            <div class="document-label">Дата рождения</div>
+                            <div class="document-value">05.03.2006</div>
+                        </div>
+                    </div>
+                    
+                    <div class="document-field">
+                        <div class="document-label">Место рождения</div>
+                        <div class="document-value">ГОР. РОСТОВ-НА-ДОНУ РОСТОВСКАЯ ОБЛ.</div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-blue-500 text-sm">детали документа</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showPassport() {
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('passport-view').style.display = 'block';
+        }
+        
+        function showMain() {
+            document.getElementById('main-view').style.display = 'block';
+            document.getElementById('passport-view').style.display = 'none';
+        }
+        
+        // Fix for viewport height issues on mobile
+        function setAppHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        // Set on load
+        setAppHeight();
+        
+        // Set on resize
+        window.addEventListener('resize', setAppHeight);
+    </script>
+</body>
+</html>
